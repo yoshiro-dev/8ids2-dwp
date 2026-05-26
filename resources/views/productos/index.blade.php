@@ -19,17 +19,19 @@
         </tr>
     </thead>
     <tbody>
+        @foreach($productos as $producto)
         <tr>
-            <th scope="row">1</th>
-            <td>codigo</td>
-            <td>nombre</td>
-            <td>precio</td>
-            <td>existencia</td>
+            <th scope="row">{{ $producto->id }}</th>
+            <td>{{ $producto->codigo }}</td>
+            <td>{{ $producto->nombre }}</td>
+            <td>{{ $producto->precio }}</td>
+            <td>{{ $producto->existencia }}</td>
             <td>
                 <button type="button" class="btn btn-primary">Editar</button>
                 <button type="button" class="btn btn-danger">Eliminar</button>
             </td>
         </tr>
+        @endforeach
     </tbody>
 </table>
 @stop

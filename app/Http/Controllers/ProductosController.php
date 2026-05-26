@@ -12,6 +12,12 @@ class ProductosController extends Controller
         return view('productos.create');
     }
 
+        public function edit($id)
+    {
+        $producto = Producto::find($id);
+        return view('products.create', compact('producto'));
+    }
+
         public function index()
     {
         $productos = Producto::all();
