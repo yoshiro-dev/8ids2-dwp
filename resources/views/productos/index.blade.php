@@ -1,9 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Lista de Productos')
 
 @section('content_header')
-<h1>Dashboard</h1>
+<h1>Lista de Productos</h1>
+{{ Breadcrumbs::render('producto.index') }}
 @stop
 
 @section('content')
@@ -27,8 +28,12 @@
             <td>{{ $producto->precio }}</td>
             <td>{{ $producto->existencia }}</td>
             <td>
-                <button type="button" class="btn btn-primary">Editar</button>
-                <button type="button" class="btn btn-danger">Eliminar</button>
+                <a href="{{ route('producto.editar', $producto->id) }}" class="btn btn-primary">Editar</a>
+                <form action="{{ route('producto.eliminar', $producto->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
             </td>
         </tr>
         @endforeach

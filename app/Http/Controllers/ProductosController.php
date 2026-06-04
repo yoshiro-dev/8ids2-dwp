@@ -9,24 +9,36 @@ class ProductosController extends Controller
 {
     public function create()
     {
-        return view('productos.create');
+        $producto = new Producto(); 
+        return view('productos.create', compact('producto'));
     }
 
-        public function edit($id)
+    public function edit($id)
+    {
+        $producto = Producto::find($id); 
+        return view('productos.create', compact('producto'));
+    }
+
+    public function delete($id)
     {
         $producto = Producto::find($id);
-        return view('products.create', compact('producto'));
+        $producto->delete();
+        return redirect()->route('producto.index');
     }
 
-        public function index()
+    public function index()
     {
         $productos = Producto::all();
-        return view("productos.index",compact('productos'));
+        return view("productos.index", compact('productos'));
     }
 
     public function store(Request $request)
     {
-        $producto = new Producto();
+        if ($request->id == 0) {
+            $producto = new Producto();
+        } else {
+            $producto = Producto::find($request->id);
+        }
 
         $producto->codigo = $request->codigo;
         $producto->nombre = $request->nombre;
@@ -36,7 +48,6 @@ class ProductosController extends Controller
         
         $producto->save();
 
-        return redirect()->route('productos');
-        
+        return redirect()->route('producto.index'); 
     }
 }

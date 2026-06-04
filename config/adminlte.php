@@ -304,20 +304,20 @@ return [
             'url' => '#',
             'icon' => 'fas fa-box',
             'submenu' => [
-                [
-                    'text' => 'Lista',
-                    'url' => 'productos',
-                    'icon' => 'fas fa-list',
-                ],
-                [
-                    'text' => 'Nuevo',
-                    'url' => 'producto/nuevo',
-                    'icon' => 'fas fa-plus',
-                ],
+                ['text' => 'Lista', 'url' => 'productos', 'icon' => 'fas fa-list'],
+                ['text' => 'Nuevo', 'url' => 'producto/nuevo', 'icon' => 'fas fa-plus'],
+            ],
+        ],
+        [
+            'text' => 'Almacén',
+            'url' => '#',
+            'icon' => 'fas fa-warehouse',
+            'submenu' => [
+                ['text' => 'Lista', 'url' => 'almacen', 'icon' => 'fas fa-list'],
+                ['text' => 'Nuevo', 'url' => 'almacen/nuevo', 'icon' => 'fas fa-plus'],
             ],
         ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Menu Filters
