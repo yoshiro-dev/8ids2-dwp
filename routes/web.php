@@ -27,3 +27,16 @@ Route::get('almacen/editar/{id}', [AlmacenController::class, 'edit'])->name('alm
 Route::post('almacen/guardar', [AlmacenController::class, 'store'])->name('almacen.guardar');
 Route::delete('almacen/eliminar/{id}', [AlmacenController::class, 'delete'])->name('almacen.eliminar');
 Route::get('almacen', [AlmacenController::class, 'index'])->name('almacen.index');
+
+if (app()->environment('local')) {
+    Route::get('/error/{code}', function ($code) {
+        $code = (int) $code;
+        $allowedCodes = [401, 402, 403, 404, 419, 429, 500, 503];
+
+        if (! in_array($code, $allowedCodes)) {
+            abort(404);
+        }
+
+        abort($code);
+    });
+}
