@@ -63,7 +63,11 @@
     </tbody>
 </table>
 
-{{ $almacenes->links() }}
+@if($almacenes->hasPages())
+    <div class="mt-3">
+        {{ $almacenes->onEachSide(1)->links() }}
+    </div>
+@endif
 @stop
 
 @section('css')

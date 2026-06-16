@@ -67,7 +67,11 @@
     </tbody>
 </table>
 
-{{ $productos->links() }}
+@if($productos->hasPages())
+    <div class="mt-3">
+        {{ $productos->onEachSide(1)->links() }}
+    </div>
+@endif
 @stop
 
 @section('css')
