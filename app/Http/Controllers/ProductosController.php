@@ -28,13 +28,14 @@ class ProductosController extends Controller
 
     public function index(Request $request)
     {
-        $buscar = $request->input('buscar');
+        $buscar = trim((string) $request->input('buscar', ''));
+        $termino = '%' . mb_strtolower($buscar, 'UTF-8') . '%';
 
         $productos = Producto::query()
-            ->when($buscar, function ($query, $buscar) {
-                $query->where(function ($q) use ($buscar) {
-                    $q->where('codigo', 'LIKE', "%{$buscar}%")
-                        ->orWhere('nombre', 'LIKE', "%{$buscar}%");
+            ->when($buscar !== '', function ($query) use ($termino) {
+                $query->where(function ($q) use ($termino) {
+                    $q->whereRaw('LOWER(codigo) LIKE ?', [$termino])
+                        ->orWhereRaw('LOWER(nombre) LIKE ?', [$termino]);
                 });
             })
             ->orderBy('id', 'desc')

@@ -51,7 +51,13 @@
         </tr>
         @empty
         <tr>
-            <td colspan="4" class="text-center">No se encontraron almacenes.</td>
+            <td colspan="4" class="text-center">
+                @if(!empty($buscar))
+                    No se encontraron almacenes para "{{ $buscar }}".
+                @else
+                    No hay almacenes registrados.
+                @endif
+            </td>
         </tr>
         @endforelse
     </tbody>

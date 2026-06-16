@@ -4,6 +4,8 @@ Aplicacion web desarrollada con Laravel para practicar autenticacion, rutas, con
 
 El proyecto incluye modulos basicos para administrar productos y almacenes, usando Laravel AdminLTE como plantilla visual principal.
 
+Ultima actualizacion: 16 de junio de 2026.
+
 ## Tecnologias
 
 - PHP 8.3
@@ -22,6 +24,7 @@ El proyecto incluye modulos basicos para administrar productos y almacenes, usan
 - Vista principal `/home`.
 - CRUD basico de productos.
 - CRUD basico de almacenes.
+- Filtros de busqueda por codigo o nombre en productos y almacenes.
 - Breadcrumbs para la navegacion interna.
 - Paginas de error personalizadas en `resources/views/errors`.
 - Imagenes para errores en `public/images/errors`.
@@ -40,6 +43,8 @@ GET    /producto/editar/{id}
 POST   /producto/guardar
 DELETE /producto/eliminar/{id}
 ```
+
+El listado permite buscar por una palabra contenida en `codigo` o `nombre`.
 
 Campos del producto:
 
@@ -62,6 +67,8 @@ GET    /almacen/editar/{id}
 POST   /almacen/guardar
 DELETE /almacen/eliminar/{id}
 ```
+
+El listado permite buscar por una palabra contenida en `codigo` o `nombre`.
 
 Campos del almacen:
 
