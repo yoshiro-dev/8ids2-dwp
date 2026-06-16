@@ -26,10 +26,22 @@ class ProductosController extends Controller
         return redirect()->route('producto.index');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::all();
-        return view("productos.index", compact('productos'));
+        $buscar = $request->input('buscar');
+
+        $productos = Producto::query()
+            ->when($buscar, function ($query, $buscar) {
+                $query->where(function ($q) use ($buscar) {
+                    $q->where('codigo', 'LIKE', "%{$buscar}%")
+                        ->orWhere('nombre', 'LIKE', "%{$buscar}%");
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+        
+        return view("productos.index", compact('productos', 'buscar'));
     }
 
     public function store(Request $request)

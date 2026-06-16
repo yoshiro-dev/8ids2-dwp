@@ -26,10 +26,22 @@ class AlmacenController extends Controller
         return redirect()->route('almacen.index');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $almacenes = Almacen::all();
-        return view("almacen.index", compact('almacenes'));
+        $buscar = $request->input('buscar');
+
+        $almacenes = Almacen::query()
+            ->when($buscar, function ($query, $buscar) {
+                $query->where(function ($q) use ($buscar) {
+                    $q->where('codigo', 'LIKE', "%{$buscar}%")
+                        ->orWhere('nombre', 'LIKE', "%{$buscar}%");
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view("almacen.index", compact('almacenes', 'buscar'));
     }
 
     public function store(Request $request)

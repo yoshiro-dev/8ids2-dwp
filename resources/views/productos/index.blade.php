@@ -8,11 +8,28 @@
 @stop
 
 @section('content')
+<form action="{{ route('producto.index') }}" method="GET" class="mb-3">
+    <div class="input-group">
+        <input
+            type="text"
+            name="buscar"
+            class="form-control"
+            value="{{ $buscar ?? '' }}"
+            placeholder="Buscar por codigo o nombre">
+
+        <button type="submit" class="btn btn-primary">Buscar</button>
+
+        @if(!empty($buscar))
+            <a href="{{ route('producto.index') }}" class="btn btn-outline-secondary">Limpiar</a>
+        @endif
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Código</th>
+            <th scope="col">Codigo</th>
             <th scope="col">Nombre</th>
             <th scope="col">Precio</th>
             <th scope="col">Existencia</th>
@@ -20,7 +37,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($productos as $producto)
+        @forelse($productos as $producto)
         <tr>
             <th scope="row">{{ $producto->id }}</th>
             <td>{{ $producto->codigo }}</td>
@@ -36,9 +53,15 @@
                 </form>
             </td>
         </tr>
-        @endforeach
+        @empty
+        <tr>
+            <td colspan="6" class="text-center">No se encontraron productos.</td>
+        </tr>
+        @endforelse
     </tbody>
 </table>
+
+{{ $productos->links() }}
 @stop
 
 @section('css')
