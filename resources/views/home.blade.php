@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <p>Yoshiro Pablo Armando Riaño Ishiwara</p>
+    <p>Bienvenido, {{ auth()->user()->name }}</p>
 @stop
 
 @section('css')
