@@ -16,17 +16,21 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/producto/nuevo', [ProductosController::class, 'create'])->name('producto.nuevo');
-Route::get('producto/editar/{id}', [ProductosController::class, 'edit'])->name('producto.editar');
-Route::post('/producto/guardar', [ProductosController::class, 'store'])->name('producto.guardar');
-Route::delete('producto/eliminar/{id}', [ProductosController::class, 'delete'])->name('producto.eliminar');
-Route::get('productos', [ProductosController::class, 'index'])->name('producto.index');
+Route::middleware(['auth', 'permission:ver productos'])->group(function () {
+    Route::get('/producto/nuevo', [ProductosController::class, 'create'])->name('producto.nuevo');
+    Route::get('producto/editar/{id}', [ProductosController::class, 'edit'])->name('producto.editar');
+    Route::post('/producto/guardar', [ProductosController::class, 'store'])->name('producto.guardar');
+    Route::delete('producto/eliminar/{id}', [ProductosController::class, 'delete'])->name('producto.eliminar');
+    Route::get('productos', [ProductosController::class, 'index'])->name('producto.index');
+});
 
-Route::get('almacen/nuevo', [AlmacenController::class, 'create'])->name('almacen.nuevo');
-Route::get('almacen/editar/{id}', [AlmacenController::class, 'edit'])->name('almacen.editar');
-Route::post('almacen/guardar', [AlmacenController::class, 'store'])->name('almacen.guardar');
-Route::delete('almacen/eliminar/{id}', [AlmacenController::class, 'delete'])->name('almacen.eliminar');
-Route::get('almacen', [AlmacenController::class, 'index'])->name('almacen.index');
+Route::middleware(['auth', 'permission:ver almacenes'])->group(function () {
+    Route::get('almacen/nuevo', [AlmacenController::class, 'create'])->name('almacen.nuevo');
+    Route::get('almacen/editar/{id}', [AlmacenController::class, 'edit'])->name('almacen.editar');
+    Route::post('almacen/guardar', [AlmacenController::class, 'store'])->name('almacen.guardar');
+    Route::delete('almacen/eliminar/{id}', [AlmacenController::class, 'delete'])->name('almacen.eliminar');
+    Route::get('almacen', [AlmacenController::class, 'index'])->name('almacen.index');
+});
 
 if (app()->environment('local')) {
     Route::get('/error/{code}', function ($code) {
