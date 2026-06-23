@@ -4,7 +4,7 @@ Aplicacion web desarrollada con Laravel para practicar autenticacion, rutas, con
 
 El proyecto incluye modulos basicos para administrar productos y almacenes, usando Laravel AdminLTE como plantilla visual principal.
 
-Ultima actualizacion: 16 de junio de 2026.
+Ultima actualizacion: 23 de junio de 2026, 13:06 (-06:00).
 
 ## Tecnologias
 
@@ -18,6 +18,11 @@ Ultima actualizacion: 16 de junio de 2026.
 - Laravel UI para autenticacion
 - Laravel AdminLTE
 - Diglactic Laravel Breadcrumbs
+
+## Documentacion del proyecto
+
+- Historial de commits y modulos: `docs/historial-proyecto.md`
+- Datos de prueba SQL: `database/datos_prueba.sql`
 
 ## Requisitos previos en Windows
 
@@ -267,6 +272,14 @@ almacen@test.com / 12345678
 producto@test.com / 12345678
 ```
 
+Roles y permisos:
+
+```txt
+admin@test.com     puede ver productos y almacenes
+almacen@test.com   puede ver almacenes
+producto@test.com  puede ver productos
+```
+
 ### Datos de prueba adicionales
 
 El proyecto incluye un archivo SQL con 50 productos y 10 almacenes de prueba:
@@ -288,6 +301,46 @@ Nota para PowerShell: si `npm` muestra un error por politicas de ejecucion de sc
 ```powershell
 npm.cmd install
 npm.cmd run build
+```
+
+## Flujo diario de desarrollo
+
+Abrir una terminal para Laravel:
+
+```bash
+php artisan serve
+```
+
+Abrir otra terminal para Vite:
+
+```powershell
+npm.cmd run dev
+```
+
+Entrar en el navegador:
+
+```txt
+http://127.0.0.1:8000
+```
+
+Si se usa CMD en lugar de PowerShell, tambien funciona:
+
+```bat
+npm run dev
+```
+
+## Reset de base de datos
+
+Para borrar tablas, volver a ejecutar migraciones y cargar usuarios de prueba:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Para cargar tambien los 50 productos y 10 almacenes del SQL:
+
+```bat
+psql -U postgres -d 8ids2 -f database/datos_prueba.sql
 ```
 
 ## Proyecto ya existente
@@ -319,6 +372,48 @@ npm install
 ```
 
 No borrar `composer.lock` ni `package-lock.json` salvo que se quiera actualizar versiones de dependencias de forma intencional.
+
+## Solucion de problemas
+
+### `npm.ps1` bloqueado en PowerShell
+
+PowerShell puede bloquear `npm.ps1` por politicas de ejecucion. Usar:
+
+```powershell
+npm.cmd install
+npm.cmd run build
+npm.cmd run dev
+```
+
+### Composer falla con `StartedSubscriber`
+
+Si aparece un error similar a `Interface "PHPUnit\Event\Application\StartedSubscriber" not found`, regenerar el autoload:
+
+```bat
+composer dump-autoload -o --no-scripts
+php artisan package:discover
+composer install
+```
+
+Si el problema continua, reconstruir `vendor`:
+
+```bat
+rmdir /s /q vendor
+composer clear-cache
+composer install
+```
+
+### PostgreSQL en modo de recuperacion
+
+Si SQL Shell muestra `el sistema de base de datos esta en modo de recuperacion`, esperar un minuto e intentar otra vez. Si continua, reiniciar el servicio desde `services.msc`:
+
+```txt
+postgresql-x64-18
+postgresql-x64-17
+postgresql-x64-16
+```
+
+El nombre exacto depende de la version instalada.
 
 ## Desarrollo
 
