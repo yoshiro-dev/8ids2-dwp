@@ -8,15 +8,69 @@ Ultima actualizacion: 16 de junio de 2026.
 
 ## Tecnologias
 
-- PHP 8.3
+- PHP 8.3 o superior
 - Laravel 13
 - Composer
 - Node.js y npm
+- PostgreSQL
 - Vite
 - Bootstrap / Sass
 - Laravel UI para autenticacion
 - Laravel AdminLTE
 - Diglactic Laravel Breadcrumbs
+
+## Requisitos previos en Windows
+
+Antes de instalar el proyecto, verificar que estas herramientas esten instaladas y disponibles en el `Path`:
+
+```bash
+php -v
+composer -V
+node -v
+npm -v
+psql --version
+```
+
+Links oficiales:
+
+- PHP para Windows: https://www.php.net/downloads.php?os=windows
+- Visual C++ Redistributable x64: https://aka.ms/vs/17/release/vc_redist.x64.exe
+- Composer: https://getcomposer.org/download/
+- Node.js: https://nodejs.org/en/download
+- PostgreSQL: https://www.postgresql.org/download/windows/
+- Git para Windows: https://git-scm.com/install/windows
+- Visual Studio Code: https://code.visualstudio.com/
+
+Para PHP en Windows se recomienda descargar el ZIP `VS17 x64 Non Thread Safe` y agregar al `Path` la carpeta donde esta `php.exe`.
+
+### Extensiones PHP requeridas
+
+El archivo `php.ini` usado por la terminal debe tener activas estas extensiones:
+
+```ini
+extension=curl
+extension=fileinfo
+extension=mbstring
+extension=openssl
+extension=pdo_pgsql
+extension=pgsql
+extension=zip
+```
+
+Para saber que `php.ini` esta usando PHP:
+
+```bash
+php --ini
+```
+
+Para validar extensiones:
+
+```bash
+php -m | findstr fileinfo
+php -m | findstr pgsql
+```
+
+Si una extension aparece comentada con `;`, quitar el `;`, guardar `php.ini`, cerrar la terminal y abrir una nueva.
 
 ## Funcionalidades
 
@@ -125,9 +179,15 @@ http://127.0.0.1:8000/error/500
 
 Esta ruta solo se registra cuando la aplicacion esta en entorno `local`.
 
-## Instalacion
+## Instalacion desde cero
 
-Clonar el repositorio e instalar dependencias:
+Entrar a la carpeta del proyecto:
+
+```bash
+cd /d C:\Users\yrian\Documents\GitHub\8ids2
+```
+
+Instalar dependencias de PHP y Node:
 
 ```bash
 composer install
@@ -136,8 +196,37 @@ npm install
 
 Crear el archivo de entorno:
 
-```bash
-copy .env.example .env
+```bat
+if not exist .env copy .env.example .env
+```
+
+Configurar PostgreSQL en `.env`:
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=8ids2
+DB_USERNAME=postgres
+DB_PASSWORD=tu_password
+```
+
+La base indicada en `DB_DATABASE` debe existir en PostgreSQL antes de ejecutar migraciones. Se puede crear desde pgAdmin o desde CMD:
+
+```bat
+createdb -U postgres 8ids2
+```
+
+Si ya se esta dentro de SQL Shell (`psql`), usar SQL en lugar del comando de CMD:
+
+```sql
+CREATE DATABASE "8ids2";
+```
+
+El nombre va entre comillas porque empieza con numero. Para confirmar que la base existe:
+
+```sql
+\l
 ```
 
 Generar la llave de la aplicacion:
@@ -146,10 +235,10 @@ Generar la llave de la aplicacion:
 php artisan key:generate
 ```
 
-Configurar la base de datos en `.env` y ejecutar migraciones:
+Ejecutar migraciones y seeders:
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
 Compilar assets:
@@ -169,6 +258,67 @@ Abrir en el navegador:
 ```txt
 http://127.0.0.1:8000
 ```
+
+Usuarios de prueba creados por el seeder:
+
+```txt
+admin@test.com / 12345678
+almacen@test.com / 12345678
+producto@test.com / 12345678
+```
+
+### Datos de prueba adicionales
+
+El proyecto incluye un archivo SQL con 50 productos y 10 almacenes de prueba:
+
+```txt
+database/datos_prueba.sql
+```
+
+Para cargarlo en PostgreSQL:
+
+```bat
+psql -U postgres -d 8ids2 -f database/datos_prueba.sql
+```
+
+El archivo no borra registros existentes. Si se ejecuta mas de una vez, agregara datos duplicados.
+
+Nota para PowerShell: si `npm` muestra un error por politicas de ejecucion de scripts, usar `npm.cmd`:
+
+```powershell
+npm.cmd install
+npm.cmd run build
+```
+
+## Proyecto ya existente
+
+Si el proyecto ya estaba en la computadora, no es necesario clonar de nuevo. Antes de correr migraciones, verificar que las herramientas y extensiones esten disponibles:
+
+```bat
+php -v
+composer -V
+node -v
+npm -v
+php -m | findstr fileinfo
+php -m | findstr pgsql
+```
+
+Si `composer install` falla con errores de clases faltantes dentro de `vendor`, reconstruir las dependencias PHP desde `composer.lock`:
+
+```bat
+rmdir /s /q vendor
+composer clear-cache
+composer install
+```
+
+Si `npm install` falla por paquetes anteriores, reconstruir las dependencias de Node desde `package-lock.json`:
+
+```bat
+rmdir /s /q node_modules
+npm install
+```
+
+No borrar `composer.lock` ni `package-lock.json` salvo que se quiera actualizar versiones de dependencias de forma intencional.
 
 ## Desarrollo
 
