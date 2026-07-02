@@ -4,7 +4,7 @@ Aplicacion web desarrollada con Laravel para practicar autenticacion, rutas, con
 
 El proyecto incluye modulos basicos para administrar productos y almacenes, usando Laravel AdminLTE como plantilla visual principal.
 
-Ultima actualizacion: 23 de junio de 2026, 13:06 (-06:00).
+Ultima actualizacion: 25 de junio de 2026.
 
 ## Tecnologias
 
@@ -80,6 +80,7 @@ Si una extension aparece comentada con `;`, quitar el `;`, guardar `php.ini`, ce
 ## Funcionalidades
 
 - Registro, inicio y cierre de sesion con `Auth::routes()`.
+- Recuperacion de contrasena por correo.
 - Vista principal `/home`.
 - CRUD basico de productos.
 - CRUD basico de almacenes.
@@ -280,6 +281,45 @@ almacen@test.com   puede ver almacenes
 producto@test.com  puede ver productos
 ```
 
+## Correo y recuperacion de contrasena
+
+Para enviar correos reales de recuperacion de contrasena se puede usar Gmail por SMTP. La cuenta de Gmail debe tener activa la verificacion en 2 pasos y debe generarse una contrasena de aplicacion desde la cuenta de Google.
+
+Configuracion recomendada en `.env`:
+
+```env
+MAIL_MAILER=smtp
+MAIL_SCHEME=null
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=tu_correo@gmail.com
+MAIL_PASSWORD=contrasena_de_aplicacion_sin_espacios
+MAIL_FROM_ADDRESS="tu_correo@gmail.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+Notas importantes:
+
+- `MAIL_USERNAME` y `MAIL_FROM_ADDRESS` son el correo que envia los mensajes.
+- `MAIL_PASSWORD` no es la contrasena normal de Gmail, es la contrasena de aplicacion.
+- Si Google muestra la contrasena de aplicacion con espacios, guardarla en `.env` sin espacios.
+- Los usuarios de prueba `@test.com` sirven para iniciar sesion en local, pero no para recibir correos reales.
+- Para probar recuperacion de contrasena, usar un usuario cuyo correo exista de verdad en la tabla `users`.
+
+Despues de cambiar variables de correo, limpiar la configuracion:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+Rutas principales de recuperacion:
+
+```txt
+POST password/email
+GET  password/reset/{token}
+```
+
 ### Datos de prueba adicionales
 
 El proyecto incluye un archivo SQL con 50 productos y 10 almacenes de prueba:
@@ -374,6 +414,24 @@ npm install
 No borrar `composer.lock` ni `package-lock.json` salvo que se quiera actualizar versiones de dependencias de forma intencional.
 
 ## Solucion de problemas
+
+### `php` no se reconoce en PowerShell
+
+Si PowerShell muestra `php : El termino 'php' no se reconoce`, Windows no esta encontrando `php.exe`.
+
+Verificar donde esta instalado PHP y agregar al `Path` la carpeta que contiene `php.exe`, por ejemplo:
+
+```txt
+C:\Users\usuario\OneDrive\Documents\php\php-8.x.x-nts-Win32-vs17-x64
+```
+
+Cerrar PowerShell, abrir una nueva terminal y validar:
+
+```powershell
+php -v
+```
+
+Si PHP esta dentro de OneDrive, revisar que el `Path` use la ruta completa con `OneDrive\Documents` y no solo `Documents`.
 
 ### `npm.ps1` bloqueado en PowerShell
 
