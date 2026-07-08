@@ -1,0 +1,172 @@
+{
+	"info": {
+		"name": "8IDS2 - API Laravel (Login + CRUD Productos)",
+		"description": "Tarea Tercer Parcial - Crear API en Laravel. Ejecuta primero 'Login' y el token se guarda solo; las demas peticiones ya lo usan.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "producto_id",
+			"value": "1"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "1. Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const data = pm.response.json();",
+							"if (data.token) {",
+							"    pm.collectionVariables.set('token', data.token);",
+							"    console.log('Token guardado automaticamente');",
+							"}",
+							"pm.test('Acceso Ok', () => pm.expect(data.acceso).to.eql('Ok'));"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"12345678\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/api/login"
+			}
+		},
+		{
+			"name": "2. Crear Producto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const data = pm.response.json();",
+							"if (data.producto && data.producto.id) {",
+							"    pm.collectionVariables.set('producto_id', data.producto.id);",
+							"    console.log('producto_id guardado: ' + data.producto.id);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"codigo\": \"P001\",\n    \"nombre\": \"Laptop Thinkpad\",\n    \"precio\": 15999.90,\n    \"impuesto\": 16,\n    \"existencia\": 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/api/productos"
+			}
+		},
+		{
+			"name": "3. Lista Productos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": "{{base_url}}/api/productos"
+			}
+		},
+		{
+			"name": "4. Lista 1 Producto",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": "{{base_url}}/api/productos/{{producto_id}}"
+			}
+		},
+		{
+			"name": "5. Editar Producto",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"precio\": 14500.00,\n    \"existencia\": 8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/api/productos/{{producto_id}}"
+			}
+		},
+		{
+			"name": "6. Eliminar Producto",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": "{{base_url}}/api/productos/{{producto_id}}"
+			}
+		}
+	]
+}
