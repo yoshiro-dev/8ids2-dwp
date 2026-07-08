@@ -1,8 +1,8 @@
 # Historial del proyecto
 
-Actualizado: 2026-06-23 13:06:57 -06:00.
+Actualizado: 2026-07-07.
 
-Este documento registra el avance del repositorio y del proyecto Laravel. Las fechas y horas salen de `git log --date=iso-local`. El historial de commits esta documentado hasta `b0e73b4`; el commit que crea este documento sera posterior.
+Este documento registra el avance del repositorio y del proyecto Laravel. Las fechas y horas salen de `git log --date=iso-local`. El historial de commits esta documentado hasta `ae13a1b`.
 
 Nota: en commits antiguos del repositorio, la funcion se resume a partir del mensaje del commit y los archivos modificados. En los modulos Laravel se describe el comportamiento visible en el proyecto actual.
 
@@ -22,6 +22,11 @@ Nota: en commits antiguos del repositorio, la funcion se resume a partir del men
 | 2026-06-18 16:08:29 -0600 | `bd56a63` | Roles y permisos | Spatie Permission, migracion de permisos, `config/permission.php`, seeders de roles, middleware en rutas | Restringe productos y almacenes segun permiso del usuario |
 | 2026-06-18 16:38:20 -0600 | `0f39725` | Home autenticado | Ajustes en `resources/views/home.blade.php` | Muestra informacion del usuario autenticado en el inicio |
 | 2026-06-23 13:04:25 -0600 | `b0e73b4` | Instalacion, PostgreSQL y datos de prueba | README ampliado, `.env.example` con PostgreSQL y `database/datos_prueba.sql` | Documenta instalacion real en Windows/PostgreSQL y agrega 50 productos + 10 almacenes de prueba |
+| 2026-07-02 12:26:34 -0600 | `246aeb3` | Correo y recuperacion de contrasena | Seccion de configuracion de correo en el README (SMTP, `.env`) | Documenta como funciona la recuperacion de contrasena por correo con los controladores Auth existentes |
+| 2026-07-02 12:51:20 -0600 | `d77887d` | CAPTCHA en login | Google reCAPTCHA en el formulario de login, validacion en servidor y configuracion en `.env` | Protege el inicio de sesion contra bots |
+| 2026-07-02 15:30:32 -0600 | `5613daa` | Fix SSL de reCAPTCHA | Ajuste de verificacion SSL al validar el token contra Google | Corrige el error de certificado al verificar el CAPTCHA en Windows local |
+| 2026-07-06 22:41:33 -0600 | `f8609ba` | API REST con Sanctum | Laravel Sanctum (`config/sanctum.php`, migracion de tokens), `LoginController` API, `ProductoApiController` (CRUD completo) y `routes/api.php` | Expone login por token (`POST /api/login`) y CRUD de productos (`GET/POST/PUT/DELETE /api/productos`) protegido con `auth:sanctum` |
+| 2026-07-07 22:16:46 -0600 | `ae13a1b` | Documentacion de la API | `docs/8ids2-api.postman_collection.json` y `docs/como-probar-api.md` | Coleccion de Postman con token automatizado y guia paso a paso para probar cada endpoint |
 
 ## Trabajo de configuracion local documentado
 
@@ -38,6 +43,43 @@ Estos pasos se documentaron porque fueron necesarios para levantar el proyecto e
 | 2026-06-23 | Migraciones y seeders | Se ejecuto `php artisan migrate --seed` | Crea tablas y usuarios de prueba con roles |
 | 2026-06-23 | Build frontend | Se ejecuto `npm.cmd run build` en PowerShell | Compila assets en `public/build` evitando el bloqueo de `npm.ps1` |
 | 2026-06-23 | Servidor local | Se ejecuto `php artisan serve` | Levanta el proyecto en `http://127.0.0.1:8000` |
+| 2026-07-06 | Git en la Thinkpad | Se configuro `user.name`/`user.email` y `windows.appendAtomically false` | Permite commitear en esta laptop; el segundo ajuste corrige un error de git con repos dentro de OneDrive |
+| 2026-07-06 | PHP 8.4 en la Thinkpad | Se instalo PHP 8.4.23 NTS en `C:\php84` con `pdo_pgsql`, `pgsql`, `mbstring`, `curl`, `openssl`, `zip`, `fileinfo` | El XAMPP local solo tenia PHP 8.2 y el proyecto requiere 8.3+; usar `C:\php84\php.exe artisan serve` |
+| 2026-07-06 | Reparacion de PostgreSQL 18 | Se recrearon carpetas vacias del data dir (`pg_notify`, `pg_tblspc`, etc.) y se inicio el servicio | El servicio no arrancaba porque una sincronizacion/copia omitio las carpetas vacias que Postgres exige |
+| 2026-07-06 | Base de datos en la Thinkpad | Se creo la base `8ids2` y se ejecuto `php artisan migrate` + `db:seed` | Deja la base local lista con tablas, roles y usuarios de prueba |
+
+## Tareas de Classroom — 8IDS2 Desarrollo Web Profesional
+
+Estado al 2026-07-07 segun Google Classroom (calificaciones sobre 100). Cada tarea se enlaza con el modulo del repositorio que la resuelve.
+
+### Primer parcial
+
+| Tarea | Fecha limite | Calificacion | Modulo / commit en el repo |
+|---|---|---|---|
+| Exposiciones | 12 may | 100/100 | — (actividad en clase) |
+| Practica 1 | 14 may | 100/100 | Base Laravel (`b793213`) |
+| Login y registro | 21 may | 100/100 | Autenticacion Auth + vistas (`b793213`) |
+| Crud Producto | 28 may | 100/100 | `ProductosController` + vistas (`b793213`, `0550410`) |
+| Crud Almacen | 2 jun | 100/100 | `AlmacenController` + vistas (`966ea8b`) |
+
+### Segundo parcial
+
+| Tarea | Fecha limite | Calificacion | Modulo / commit en el repo |
+|---|---|---|---|
+| Menu persistente y breadcrumbs | 4 jun | 100/100 | Breadcrumbs con `diglactic/laravel-breadcrumbs` (`966ea8b`) |
+| Pagina de error 404 personalizada | 9 jun | 100/100 | Vistas de error 401-503 (`714a482`) |
+| Busquedas | 16 jun | 100/100 | Filtros y paginacion (`19a91a7`, `3618629`, `ea55183`) |
+| Roles y Permisos | 18 jun | 100/100 | Spatie Permission (`bd56a63`) |
+| Recuperacion de contrasena por correo | 25 jun | 100/100 | Controladores Auth + configuracion SMTP (`246aeb3`) |
+| Agregar CAPTCHA a Formulario | 30 jun | 100/100 | Google reCAPTCHA en login (`d77887d`, `5613daa`) |
+
+### Tercer parcial
+
+| Tarea | Fecha limite | Calificacion | Modulo / commit en el repo |
+|---|---|---|---|
+| Crear API en Laravel | 2 jul | 100/100 | API con Sanctum: login + CRUD productos (`f8609ba`) y documentacion Postman (`ae13a1b`) |
+
+Resumen: 12 tareas calificadas, todas con 100/100.
 
 ## Historial de commits
 
@@ -74,3 +116,9 @@ Estos pasos se documentaron porque fueron necesarios para levantar el proyecto e
 | 2026-06-18 16:08:29 -0600 | `bd56a63` | Roles y permisos con Spatie | Agrega autorizacion por rol y usuarios de prueba |
 | 2026-06-18 16:38:20 -0600 | `0f39725` | Usuario autenticado en home | Muestra datos del usuario logueado |
 | 2026-06-23 13:04:25 -0600 | `b0e73b4` | Setup y datos de prueba | Documenta instalacion Windows/PostgreSQL y agrega inserts SQL |
+| 2026-06-23 13:09:52 -0600 | `517ee3d` | Document project history and troubleshooting | Crea este documento de historial del proyecto |
+| 2026-07-02 12:26:34 -0600 | `246aeb3` | docs: documentar correo y recuperacion de contrasena | Documenta la configuracion SMTP para recuperar contrasena |
+| 2026-07-02 12:51:20 -0600 | `d77887d` | Agregar CAPTCHA al login | Integra Google reCAPTCHA en el formulario de login |
+| 2026-07-02 15:30:32 -0600 | `5613daa` | Corregir verificacion SSL de reCAPTCHA | Arregla la validacion del token en Windows local |
+| 2026-07-06 22:41:33 -0600 | `f8609ba` | Login API con Sanctum + CRUD productos API | Agrega la API REST completa (tarea del tercer parcial) |
+| 2026-07-07 22:16:46 -0600 | `ae13a1b` | docs: coleccion de Postman y guia para probar la API | Facilita probar los endpoints con Postman |

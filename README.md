@@ -81,6 +81,7 @@ Si una extension aparece comentada con `;`, quitar el `;`, guardar `php.ini`, ce
 
 - Registro, inicio y cierre de sesion con `Auth::routes()`.
 - Recuperacion de contrasena por correo.
+- Google reCAPTCHA en el formulario de login.
 - Vista principal `/home`.
 - CRUD basico de productos.
 - CRUD basico de almacenes.
@@ -89,6 +90,7 @@ Si una extension aparece comentada con `;`, quitar el `;`, guardar `php.ini`, ce
 - Paginas de error personalizadas en `resources/views/errors`.
 - Imagenes para errores en `public/images/errors`.
 - Ruta local para probar errores HTTP.
+- API REST con Laravel Sanctum: login por token y CRUD de productos (ver seccion API).
 
 ## Modulos
 
@@ -136,6 +138,21 @@ Campos del almacen:
 codigo
 nombre
 ```
+
+### API REST (Sanctum)
+
+Login (publico) y CRUD de productos (protegido con `auth:sanctum`, header `Authorization: Bearer <token>`):
+
+```txt
+POST   /api/login              # devuelve el token
+GET    /api/productos          # lista de productos
+GET    /api/productos/{id}     # un producto
+POST   /api/productos          # crear
+PUT    /api/productos/{id}     # editar
+DELETE /api/productos/{id}     # eliminar
+```
+
+Para probarla: importar `docs/8ids2-api.postman_collection.json` en Postman y seguir `docs/como-probar-api.md`.
 
 ## Paginas de error
 
