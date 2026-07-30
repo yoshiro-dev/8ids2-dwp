@@ -120,3 +120,37 @@ Un método por operación, todos usan el modelo `Producto` (Eloquent):
 ### El flujo completo, en una frase
 
 Postman envía la petición → Laravel busca la URL en `routes/api.php` → si la ruta está en el grupo `auth:sanctum`, Sanctum verifica el header `Authorization: Bearer <token>` (sin token válido corta ahí con **401**) → llama al método del controlador → el controlador usa el modelo `Producto` para hablar con PostgreSQL → devuelve el JSON que se ve en Postman.
+
+## Armar la colección a mano (sin variables)
+
+Alternativa a la colección importada: crear las 6 peticiones manualmente, con las URLs escritas directas y el token pegado a mano. Pasos clave:
+
+1. Crear la colección vacía y agregar cada petición con **Add request**.
+2. A cada petición: método correcto (POST/GET/PUT/DELETE), URL completa (`http://127.0.0.1:8000/api/...`) y header `Accept: application/json`.
+3. Login con Auth Type **No Auth**; las demás con **Bearer Token**, pegando el token que devolvió el login.
+4. Atajo válido: pegar el token una sola vez en **Authorization de la colección** (clic en el nombre de la colección → pestaña Authorization → Bearer Token) y dejar las peticiones en "Inherit auth from parent".
+5. Contras de no usar variables: cada vez que se crea un producto nuevo hay que **actualizar a mano el id** en las URLs de Listar 1 / Editar / Eliminar.
+
+## Errores y avisos comunes en Postman
+
+- **⚠️ El body debe ser raw + JSON, no raw + Text.** En la pestaña Body, junto a los radio buttons hay un dropdown que debe decir **JSON** (no "Text"). Si queda en Text, Postman envía `Content-Type: text/plain`, Laravel NO interpreta el body, y en el PUT pasa algo traicionero: como la validación usa `sometimes`, no ve campos, no cambia nada **y aun así responde 200 "Producto actualizado"**. La pista: `updated_at` sigue igual a `created_at`. En el POST de crear sí falla con error de validación (los campos son `required`).
+- **Aviso "Secrets Detected" al guardar**: Postman detecta el token pegado y ofrece protegerlo. Elegir **Override** (dejar el valor tal cual). "Secure" lo convertiría en variable del vault y "Remove" lo borra. Es solo una advertencia — aplica si la colección se compartiera públicamente; un token local de desarrollo no corre riesgo.
+- **Cómo distinguir errores**: **401 Unauthenticated** = problema de token (no llegó, mal pegado, o se borró la BD). **404 "No existe el producto"** = el token está BIEN, pero el id de la URL no existe en la base — revisar qué id devolvió el último "Crear Producto".
+- **Exportar la colección**: tres puntos (⋯) junto al nombre de la colección → Export → Collection v2.1. Ojo: el token pegado va incluido en texto plano en el archivo exportado.
+
+## Preguntas frecuentes sobre el token
+
+- **¿Hacer login otra vez invalida el token anterior?** No. Cada login ejecuta `$user->createToken('app')` y eso **agrega una fila nueva** a la tabla `personal_access_tokens` — el usuario puede tener varios tokens activos a la vez, todos válidos.
+- **¿El token expira?** No: `config/sanctum.php` tiene `'expiration' => null`. Solo muere si se borra la base de datos (`migrate:fresh` elimina la tabla de tokens → 401).
+- **¿Dónde está `personal_access_tokens` en el código?** Tres puntos:
+  1. **Se crea** con la migración `database/migrations/2026_07_02_213336_create_personal_access_tokens_table.php` (al correr `php artisan migrate`).
+  2. **Se inserta** al hacer login: `createToken()` viene del trait `HasApiTokens` que usa el modelo `User` (`app/Models/User.php`); el método vive en el paquete Sanctum (`vendor/laravel/sanctum`) y hace el INSERT.
+  3. **Se lee** en cada petición protegida: el middleware `auth:sanctum` busca el token en la tabla y deja pasar o responde 401.
+- **Dato de seguridad**: la tabla guarda el **hash SHA-256** del token, no el token real (igual que las contraseñas). El prefijo numérico del token que ves en Postman (ej. `8|ZI...`) es el id de la fila en la tabla.
+
+## Vocabulario rápido
+
+- **Request (petición)**: cada elemento de la colección (Login, Crear Producto...). Método + URL + headers/body/auth.
+- **Collection (colección)**: la carpeta que agrupa las peticiones de una API.
+- **Endpoint / ruta**: las URLs del lado del servidor (`/api/login`, `/api/productos`). Las peticiones de Postman los consumen.
+- **JSON**: formato de texto para escribir datos (`{"clave": valor}`). No es la API — es el *idioma* en que la API recibe y responde los datos. También es el formato del archivo de exportación de Postman (otro uso, sin relación con la API).
