@@ -14,6 +14,9 @@
 /.zed
 /auth.json
 /node_modules
+node_modules/
+8ids2-vue/dist
+8ids2-vue/.vite
 /public/build
 /public/fonts-manifest.dev.json
 /public/hot
