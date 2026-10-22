@@ -5,7 +5,7 @@ Aplicacion web desarrollada con Laravel para practicar autenticacion, rutas, con
 El proyecto incluye modulos basicos para administrar productos y almacenes, usando Laravel AdminLTE como plantilla visual principal.
 
 Ultima actualizacion: 25 de junio de 2026.
-
+Saludos soy Gabo BUenas tardes
 ## Tecnologias
 
 - PHP 8.3 o superior
